@@ -3,6 +3,7 @@
 > A full-stack civic issue reporting and community voting platform. Citizens can report local infrastructure problems (potholes, water leaks, garbage, broken streetlights), vote on urgency, track status updates, and view all issues on a live map.
 
 ---
+ ## Live Deplotement - https://civicvoice-delta.vercel.app/
 
 ## Tech Stack
 
