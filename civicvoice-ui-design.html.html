@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CivicVoice — UI/UX Design</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1C3144;
+    --paper:#F6F2EA;
+    --paper-2:#EDE6D6;
+    --amber:#E8A23D;
+    --red:#C84B31;
+    --green:#4C8C5B;
+    --slate:#6B7B8C;
+    --line:#D8D0BE;
+    --radius:4px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{
+    font-family:'Inter',sans-serif;
+    background:var(--paper);
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  h1,h2,h3,.display{
+    font-family:'Oswald',sans-serif;
+    text-transform:uppercase;
+    letter-spacing:0.04em;
+  }
+
+  /* ===== HEADER ===== */
+  header{
+    background:var(--ink);
+    color:var(--paper);
+    padding:16px 24px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:12px;
+  }
+  .logo{
+    font-family:'Oswald',sans-serif;
+    font-weight:700;
+    font-size:22px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .logo .dot{
+    width:10px;height:10px;background:var(--amber);
+    clip-path:polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+    display:inline-block;
+  }
+  nav{display:flex;gap:4px;background:rgba(255,255,255,0.06);border-radius:999px;padding:4px;}
+  nav button{
+    font-family:'Oswald',sans-serif;
+    font-size:13px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    background:transparent;
+    color:var(--paper);
+    border:none;
+    padding:8px 18px;
+    border-radius:999px;
+    cursor:pointer;
+    transition:background .2s, color .2s;
+  }
+  nav button.active{background:var(--amber);color:var(--ink);font-weight:600;}
+  nav button:focus-visible{outline:2px solid var(--amber);outline-offset:2px;}
+  .new-report{
+    font-family:'Oswald',sans-serif;
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    font-size:13px;
+    background:var(--red);
+    color:var(--paper);
+    border:none;
+    padding:10px 18px;
+    border-radius:var(--radius);
+    cursor:pointer;
+    font-weight:600;
+  }
+  .new-report:focus-visible{outline:2px solid var(--paper);outline-offset:2px;}
+
+  /* ===== TICKER ===== */
+  .ticker-wrap{
+    background:var(--amber);
+    color:var(--ink);
+    overflow:hidden;
+    white-space:nowrap;
+    border-bottom:1px solid var(--ink);
+  }
+  .ticker{
+    display:inline-block;
+    padding:8px 0;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:13px;
+    font-weight:500;
+    animation:scroll 28s linear infinite;
+  }
+  .ticker span{margin-right:48px;}
+  .ticker b{font-family:'Oswald',sans-serif;text-transform:uppercase;letter-spacing:.05em;}
+  @keyframes scroll{
+    0%{transform:translateX(0%);}
+    100%{transform:translateX(-50%);}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .ticker{animation:none;}
+  }
+
+  /* ===== LAYOUT ===== */
+  main{max-width:1180px;margin:0 auto;padding:28px 24px 60px;}
+  .view{display:none;}
+  .view.active{display:block;animation:fade .25s ease;}
+  @keyframes fade{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+
+  /* ===== FEED ===== */
+  .feed-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;margin-bottom:20px;flex-wrap:wrap;}
+  .feed-head h1{font-size:30px;}
+  .filters{display:flex;gap:10px;flex-wrap:wrap;}
+  .filters select{
+    font-family:'Inter',sans-serif;
+    font-size:13px;
+    padding:8px 12px;
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    background:#fff;
+    color:var(--ink);
+  }
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+  @media (max-width:900px){.grid{grid-template-columns:repeat(2,1fr);}}
+  @media (max-width:620px){.grid{grid-template-columns:1fr;}}
+
+  .card{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+  }
+  .card-img{
+    height:130px;
+    background:linear-gradient(135deg,#cfd7dd,#9fb0bc);
+    position:relative;
+  }
+  .badge{
+    position:absolute;
+    top:10px;left:10px;
+    display:flex;align-items:center;gap:6px;
+    background:rgba(28,49,68,0.85);
+    color:var(--paper);
+    font-family:'Oswald',sans-serif;
+    font-size:11px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    padding:5px 10px 5px 6px;
+    border-radius:999px;
+  }
+  .shape{width:12px;height:12px;display:inline-block;flex-shrink:0;}
+  .shape.road{background:var(--red);clip-path:polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);}
+  .shape.water{background:var(--ink);border-radius:50%;}
+  .shape.garbage{background:var(--green);clip-path:polygon(50% 0%, 0% 100%, 100% 100%);}
+  .shape.light{background:var(--amber);clip-path:polygon(30% 0%,70% 0%,100% 30%,100% 70%,70% 100%,30% 100%,0% 70%,0% 30%);}
+
+  .status-pill{
+    position:absolute;top:10px;right:10px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:10px;
+    letter-spacing:.05em;
+    padding:4px 9px;
+    border-radius:999px;
+    color:#fff;
+    text-transform:uppercase;
+  }
+  .status-pill.pending{background:var(--red);}
+  .status-pill.progress{background:var(--amber);color:var(--ink);}
+  .status-pill.resolved{background:var(--green);}
+
+  .card-body{padding:14px 14px 16px;display:flex;flex-direction:column;gap:8px;flex:1;}
+  .card-body h3{font-size:15px;letter-spacing:.02em;line-height:1.3;}
+  .card-meta{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--slate);}
+  .ai-tag{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    color:var(--green);
+    display:flex;align-items:center;gap:6px;
+  }
+  .ai-tag::before{content:'◆';font-size:9px;}
+  .card-foot{
+    margin-top:auto;
+    display:flex;align-items:center;justify-content:space-between;
+    border-top:1px solid var(--line);padding-top:10px;
+  }
+  .votes{display:flex;align-items:center;gap:10px;}
+  .vote-btn{
+    border:1px solid var(--line);
+    background:#fff;
+    border-radius:var(--radius);
+    width:30px;height:30px;
+    font-size:14px;
+    cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+    color:var(--ink);
+    transition:background .15s;
+  }
+  .vote-btn:hover{background:var(--paper-2);}
+  .vote-btn:focus-visible{outline:2px solid var(--ink);outline-offset:2px;}
+  .vote-count{font-family:'IBM Plex Mono',monospace;font-weight:500;min-width:28px;text-align:center;}
+  .authority{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--slate);}
+
+  /* ===== REPORT FORM ===== */
+  .form-wrap{max-width:620px;}
+  .form-wrap h1{font-size:28px;margin-bottom:6px;}
+  .form-sub{color:var(--slate);font-size:14px;margin-bottom:28px;}
+  .step{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:18px 20px;
+    margin-bottom:14px;
+  }
+  .step-label{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    color:var(--slate);
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    margin-bottom:8px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .step-label .num{
+    width:18px;height:18px;border-radius:50%;
+    background:var(--ink);color:var(--paper);
+    display:flex;align-items:center;justify-content:center;
+    font-size:11px;
+  }
+  .dropzone{
+    border:1.5px dashed var(--line);
+    border-radius:var(--radius);
+    padding:28px;
+    text-align:center;
+    color:var(--slate);
+    font-size:13px;
+    cursor:pointer;
+    transition:border-color .15s, background .15s;
+  }
+  .dropzone:hover{border-color:var(--ink);background:var(--paper-2);}
+  .ai-suggestion{
+    margin-top:12px;
+    background:var(--paper-2);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:10px 12px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    font-size:13px;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+  .ai-suggestion .left{display:flex;align-items:center;gap:8px;}
+  .ai-suggestion .left b{font-family:'Oswald',sans-serif;letter-spacing:.04em;}
+  .edit-link{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    color:var(--ink);
+    text-decoration:underline;
+    cursor:pointer;
+    background:none;border:none;
+  }
+  textarea, input[type=text]{
+    width:100%;
+    font-family:'Inter',sans-serif;
+    font-size:14px;
+    padding:10px 12px;
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    resize:vertical;
+    color:var(--ink);
+  }
+  textarea:focus, input:focus{outline:2px solid var(--ink);outline-offset:1px;}
+  .urgency-row{
+    display:flex;align-items:center;gap:10px;margin-top:10px;
+    font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--slate);
+  }
+  .urgency-tag{
+    padding:3px 10px;border-radius:999px;color:#fff;font-size:11px;letter-spacing:.05em;text-transform:uppercase;
+  }
+  .urgency-tag.high{background:var(--red);}
+  .loc-row{display:flex;gap:10px;flex-wrap:wrap;}
+  .loc-btn{
+    font-family:'Oswald',sans-serif;
+    font-size:12px;letter-spacing:.06em;text-transform:uppercase;
+    border:1px solid var(--ink);
+    background:#fff;color:var(--ink);
+    padding:9px 16px;border-radius:var(--radius);
+    cursor:pointer;
+  }
+  .loc-btn:hover{background:var(--ink);color:var(--paper);}
+  .loc-coords{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--slate);align-self:center;}
+  .cat-pills{display:flex;gap:8px;flex-wrap:wrap;}
+  .cat-pill{
+    display:flex;align-items:center;gap:6px;
+    border:1px solid var(--line);border-radius:999px;
+    padding:6px 14px;font-size:12px;font-family:'Oswald',sans-serif;
+    letter-spacing:.05em;text-transform:uppercase;cursor:pointer;
+    background:#fff;
+  }
+  .cat-pill.selected{border-color:var(--ink);background:var(--ink);color:var(--paper);}
+  .submit-btn{
+    width:100%;
+    font-family:'Oswald',sans-serif;
+    font-size:15px;letter-spacing:.08em;text-transform:uppercase;
+    background:var(--red);color:#fff;border:none;
+    padding:14px;border-radius:var(--radius);
+    cursor:pointer;font-weight:600;margin-top:6px;
+  }
+  .submit-btn:focus-visible{outline:2px solid var(--ink);outline-offset:2px;}
+
+  /* ===== MAP ===== */
+  .map-layout{display:grid;grid-template-columns:1fr 300px;gap:18px;}
+  @media (max-width:820px){.map-layout{grid-template-columns:1fr;}}
+  .map-area{
+    position:relative;
+    background:
+      repeating-linear-gradient(0deg, transparent, transparent 39px, var(--line) 40px),
+      repeating-linear-gradient(90deg, transparent, transparent 39px, var(--line) 40px),
+      var(--paper-2);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    height:480px;
+    overflow:hidden;
+  }
+  .pin{
+    position:absolute;
+    width:16px;height:16px;
+    transform:translate(-50%,-100%);
+    cursor:pointer;
+  }
+  .pin::after{
+    content:'';
+    position:absolute;
+    bottom:-4px;left:50%;
+    transform:translateX(-50%);
+    width:5px;height:5px;
+    background:inherit;
+    border-radius:50%;
+    opacity:.3;
+  }
+  .pin.road{background:var(--red);clip-path:polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);}
+  .pin.water{background:var(--ink);border-radius:50% 50% 50% 0;transform:translate(-50%,-100%) rotate(-45deg);}
+  .pin.garbage{background:var(--green);clip-path:polygon(50% 0%, 0% 100%, 100% 100%);}
+  .pin.light{background:var(--amber);clip-path:polygon(30% 0%,70% 0%,100% 30%,100% 70%,70% 100%,30% 100%,0% 70%,0% 30%);}
+  .hotspot{
+    position:absolute;
+    border-radius:50%;
+    background:rgba(200,75,49,0.12);
+    border:1px dashed var(--red);
+  }
+  .map-legend{
+    background:#fff;border:1px solid var(--line);border-radius:var(--radius);
+    padding:14px;font-size:13px;
+  }
+  .map-legend h3{font-size:13px;margin-bottom:10px;}
+  .legend-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+  .legend-row .shape{width:14px;height:14px;}
+  .legend-note{
+    margin-top:14px;padding-top:12px;border-top:1px solid var(--line);
+    font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--slate);line-height:1.5;
+  }
+  .side-list{margin-top:14px;}
+  .side-item{
+    background:#fff;border:1px solid var(--line);border-radius:var(--radius);
+    padding:10px 12px;margin-bottom:8px;font-size:12px;
+    display:flex;justify-content:space-between;align-items:center;
+  }
+  .side-item .name{font-family:'Oswald',sans-serif;letter-spacing:.03em;font-size:12px;}
+  .side-item .count{font-family:'IBM Plex Mono',monospace;color:var(--red);font-weight:500;}
+
+  footer{
+    text-align:center;padding:24px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;color:var(--slate);
+    border-top:1px solid var(--line);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo"><span class="dot"></span> CivicVoice</div>
+  <nav>
+    <button class="active" data-view="feed">Feed</button>
+    <button data-view="report">Report</button>
+    <button data-view="map">Map</button>
+  </nav>
+  <button class="new-report" onclick="showView('report')">+ New Report</button>
+</header>
+
+<div class="ticker-wrap">
+  <div class="ticker">
+    <span><b>Urgent now —</b> Pothole, MG Road junction · 142 votes</span>
+    <span><b>In progress —</b> Water pipeline leak, Lake Road · crew dispatched</span>
+    <span><b>Hotspot —</b> 6 garbage complaints near Sector 12 market this week</span>
+    <span><b>Urgent now —</b> Pothole, MG Road junction · 142 votes</span>
+    <span><b>In progress —</b> Water pipeline leak, Lake Road · crew dispatched</span>
+    <span><b>Hotspot —</b> 6 garbage complaints near Sector 12 market this week</span>
+  </div>
+</div>
+
+<main>
+
+  <!-- ================= FEED VIEW ================= -->
+  <section class="view active" id="feed">
+    <div class="feed-head">
+      <h1>Most urgent right now</h1>
+      <div class="filters">
+        <select aria-label="Filter by category">
+          <option>All categories</option>
+          <option>Road</option>
+          <option>Water</option>
+          <option>Garbage</option>
+          <option>Streetlight</option>
+        </select>
+        <select aria-label="Filter by location">
+          <option>All locations</option>
+          <option>Sector 12</option>
+          <option>MG Road</option>
+          <option>Lake Road</option>
+        </select>
+        <select aria-label="Sort issues">
+          <option>Most voted</option>
+          <option>Most recent</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="grid">
+
+      <article class="card">
+        <div class="card-img">
+          <span class="badge"><span class="shape road"></span> Road</span>
+          <span class="status-pill pending">Pending</span>
+        </div>
+        <div class="card-body">
+          <h3>Deep pothole at MG Road junction, causing two-wheeler accidents</h3>
+          <div class="ai-tag">AI severity: High — flagged from photo + text</div>
+          <div class="card-meta">Reported 2 days ago · MG Road, Zone 4</div>
+          <div class="card-foot">
+            <div class="votes">
+              <button class="vote-btn" aria-label="Upvote" onclick="vote(this,1)">▲</button>
+              <span class="vote-count">142</span>
+              <button class="vote-btn" aria-label="Downvote" onclick="vote(this,-1)">▼</button>
+            </div>
+            <span class="authority">→ Municipal Roads Dept.</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-img">
+          <span class="badge"><span class="shape water"></span> Water</span>
+          <span class="status-pill progress">In progress</span>
+        </div>
+        <div class="card-body">
+          <h3>Pipeline leak flooding the footpath near Lake Road bridge</h3>
+          <div class="ai-tag">AI severity: High — urgent keywords detected</div>
+          <div class="card-meta">Reported 5 hours ago · Lake Road, Zone 2</div>
+          <div class="card-foot">
+            <div class="votes">
+              <button class="vote-btn" aria-label="Upvote" onclick="vote(this,1)">▲</button>
+              <span class="vote-count">88</span>
+              <button class="vote-btn" aria-label="Downvote" onclick="vote(this,-1)">▼</button>
+            </div>
+            <span class="authority">→ Water Board</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-img">
+          <span class="badge"><span class="shape garbage"></span> Garbage</span>
+          <span class="status-pill pending">Pending</span>
+        </div>
+        <div class="card-body">
+          <h3>Overflowing garbage bins outside Sector 12 market entrance</h3>
+          <div class="ai-tag">AI: similar to 5 nearby reports — possible hotspot</div>
+          <div class="card-meta">Reported 1 day ago · Sector 12</div>
+          <div class="card-foot">
+            <div class="votes">
+              <button class="vote-btn" aria-label="Upvote" onclick="vote(this,1)">▲</button>
+              <span class="vote-count">61</span>
+              <button class="vote-btn" aria-label="Downvote" onclick="vote(this,-1)">▼</button>
+            </div>
+            <span class="authority">→ Sanitation Dept.</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-img">
+          <span class="badge"><span class="shape light"></span> Light</span>
+          <span class="status-pill resolved">Resolved</span>
+        </div>
+        <div class="card-body">
+          <h3>Three streetlights out along Park Avenue, unsafe at night</h3>
+          <div class="ai-tag">AI severity: Medium</div>
+          <div class="card-meta">Resolved 1 week ago · Park Avenue</div>
+          <div class="card-foot">
+            <div class="votes">
+              <button class="vote-btn" aria-label="Upvote" onclick="vote(this,1)">▲</button>
+              <span class="vote-count">34</span>
+              <button class="vote-btn" aria-label="Downvote" onclick="vote(this,-1)">▼</button>
+            </div>
+            <span class="authority">→ Electricity Board</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-img">
+          <span class="badge"><span class="shape road"></span> Road</span>
+          <span class="status-pill progress">In progress</span>
+        </div>
+        <div class="card-body">
+          <h3>Road surface caved in near the railway crossing on Station Road</h3>
+          <div class="ai-tag">AI severity: High</div>
+          <div class="card-meta">Reported 3 days ago · Station Road</div>
+          <div class="card-foot">
+            <div class="votes">
+              <button class="vote-btn" aria-label="Upvote" onclick="vote(this,1)">▲</button>
+              <span class="vote-count">29</span>
+              <button class="vote-btn" aria-label="Downvote" onclick="vote(this,-1)">▼</button>
+            </div>
+            <span class="authority">→ Municipal Roads Dept.</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-img">
+          <span class="badge"><span class="shape garbage"></span> Garbage</span>
+          <span class="status-pill pending">Pending</span>
+        </div>
+        <div class="card-body">
+          <h3>Construction debris dumped illegally behind the community hall</h3>
+          <div class="ai-tag">AI severity: Low</div>
+          <div class="card-meta">Reported 6 hours ago · Sector 9</div>
+          <div class="card-foot">
+            <div class="votes">
+              <button class="vote-btn" aria-label="Upvote" onclick="vote(this,1)">▲</button>
+              <span class="vote-count">12</span>
+              <button class="vote-btn" aria-label="Downvote" onclick="vote(this,-1)">▼</button>
+            </div>
+            <span class="authority">→ Sanitation Dept.</span>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ================= REPORT VIEW ================= -->
+  <section class="view" id="report">
+    <div class="form-wrap">
+      <h1>Report an issue</h1>
+      <p class="form-sub">Takes about a minute. The more detail you give, the faster it reaches the right department.</p>
+
+      <div class="step">
+        <div class="step-label"><span class="num">1</span> Add a photo</div>
+        <div class="dropzone" onclick="runAI()">
+          Tap to take a photo or choose from gallery
+        </div>
+        <div class="ai-suggestion" id="aiBox" style="display:none;">
+          <div class="left">
+            <span class="shape road"></span>
+            <span>AI suggests category: <b>Road — Pothole</b></span>
+          </div>
+          <button class="edit-link">Not right? Edit</button>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-label"><span class="num">2</span> Describe the issue</div>
+        <textarea rows="4" placeholder="What's the problem? Include any details that help — size, how long it's been there, who it affects."></textarea>
+        <div class="urgency-row">
+          AI urgency detected: <span class="urgency-tag high">High</span>
+          — based on words like "accident" and "dangerous"
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-label"><span class="num">3</span> Location</div>
+        <div class="loc-row">
+          <button class="loc-btn">Use my current location</button>
+          <span class="loc-coords">19.0760° N, 72.8777° E — MG Road, Zone 4</span>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-label"><span class="num">4</span> Category</div>
+        <div class="cat-pills">
+          <span class="cat-pill selected"><span class="shape road"></span> Road</span>
+          <span class="cat-pill"><span class="shape water"></span> Water</span>
+          <span class="cat-pill"><span class="shape garbage"></span> Garbage</span>
+          <span class="cat-pill"><span class="shape light"></span> Streetlight</span>
+        </div>
+      </div>
+
+      <button class="submit-btn">Submit report</button>
+    </div>
+  </section>
+
+  <!-- ================= MAP VIEW ================= -->
+  <section class="view" id="map">
+    <h1 style="font-size:28px;margin-bottom:16px;">Issue map</h1>
+    <div class="map-layout">
+      <div class="map-area">
+        <div class="hotspot" style="width:160px;height:160px;left:30%;top:55%;"></div>
+        <div class="pin road" style="left:32%;top:60%;" title="Pothole, MG Road"></div>
+        <div class="pin road" style="left:35%;top:50%;" title="Road cave-in, Station Rd"></div>
+        <div class="pin water" style="left:65%;top:30%;" title="Pipeline leak, Lake Road"></div>
+        <div class="pin garbage" style="left:28%;top:62%;" title="Garbage, Sector 12"></div>
+        <div class="pin garbage" style="left:33%;top:65%;" title="Garbage, Sector 12"></div>
+        <div class="pin light" style="left:55%;top:75%;" title="Streetlight, Park Ave"></div>
+      </div>
+      <div>
+        <div class="map-legend">
+          <h3>Legend</h3>
+          <div class="legend-row"><span class="shape road"></span> Road damage</div>
+          <div class="legend-row"><span class="shape water"></span> Water issue</div>
+          <div class="legend-row"><span class="shape garbage"></span> Garbage</div>
+          <div class="legend-row"><span class="shape light"></span> Streetlight</div>
+          <div class="legend-note">
+            Dashed circle marks an AI-detected hotspot — 5+ related reports clustered in this area over 7 days.
+          </div>
+        </div>
+        <div class="side-list">
+          <div class="side-item"><span class="name">Sector 12 — Garbage cluster</span><span class="count">6 reports</span></div>
+          <div class="side-item"><span class="name">MG Road — Road damage</span><span class="count">3 reports</span></div>
+          <div class="side-item"><span class="name">Lake Road — Water leak</span><span class="count">1 report</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>CIVICVOICE — UI/UX DESIGN MOCKUP · CARD SHAPES = SIGNAGE SYSTEM (CATEGORY) · COLOR = STATUS</footer>
+
+<script>
+  function showView(id){
+    document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+    document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    document.querySelector('nav button[data-view="'+id+'"]').classList.add('active');
+  }
+  document.querySelectorAll('nav button').forEach(b=>{
+    b.addEventListener('click',()=>showView(b.dataset.view));
+  });
+  function vote(btn, dir){
+    const count = btn.parentElement.querySelector('.vote-count');
+    count.textContent = parseInt(count.textContent) + dir;
+  }
+  function runAI(){
+    document.getElementById('aiBox').style.display = 'flex';
+  }
+</script>
+
+</body>
+</html>
