@@ -1,0 +1,202 @@
+/* ============================================================
+   CivicVoice — Global Styles
+   Design system tokens from civicvoice-ui-design.html
+   ============================================================ */
+
+/* Google Fonts — Oswald (headings), Inter (body), IBM Plex Mono (data) */
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+/* Tailwind CSS v4 — single import */
+@import "tailwindcss";
+
+/* ============================================================
+   CSS Custom Properties (Design Tokens)
+   These match exactly what's in civicvoice-ui-design.html
+   ============================================================ */
+:root {
+  --ink:      #1C3144;   /* Primary text / dark backgrounds */
+  --paper:    #F6F2EA;   /* Page background */
+  --paper-2:  #EDE6D6;   /* Cards / secondary backgrounds */
+  --amber:    #E8A23D;   /* In-progress status / CTAs */
+  --red:      #C84B31;   /* Pending / urgent / submit buttons */
+  --green:    #4C8C5B;   /* Resolved status */
+  --slate:    #6B7B8C;   /* Muted text / borders */
+  --line:     #D8D0BE;   /* 1px border color */
+  --radius:   4px;       /* Minimal border radius throughout */
+}
+
+/* ============================================================
+   Tailwind Theme — register design tokens as Tailwind utilities
+   ============================================================ */
+@theme {
+  /* Color palette */
+  --color-ink:      #1C3144;
+  --color-paper:    #F6F2EA;
+  --color-paper-2:  #EDE6D6;
+  --color-amber:    #E8A23D;
+  --color-cv-red:   #C84B31;
+  --color-cv-green: #4C8C5B;
+  --color-slate:    #6B7B8C;
+  --color-line:     #D8D0BE;
+
+  /* Typography */
+  --font-oswald: 'Oswald', sans-serif;
+  --font-inter:  'Inter', sans-serif;
+  --font-mono:   'IBM Plex Mono', monospace;
+
+  /* Border radius — keep it minimal */
+  --radius-DEFAULT: 4px;
+  --radius-sm:      2px;
+  --radius-lg:      8px;
+  --radius-full:    9999px;
+}
+
+/* ============================================================
+   Base / Reset
+   ============================================================ */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  min-height: 100vh;
+}
+
+/* Headings use Oswald — uppercase, tracked */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Oswald', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* ============================================================
+   Category Shape Utilities
+   These are the iconic shapes used throughout the design:
+   Road = diamond, Water = circle, Garbage = triangle, Light = octagon
+   ============================================================ */
+.shape {
+  width: 12px;
+  height: 12px;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+/* Diamond */
+.shape-road {
+  background: var(--red);
+  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+}
+
+/* Circle */
+.shape-water {
+  background: var(--ink);
+  border-radius: 50%;
+}
+
+/* Triangle */
+.shape-garbage {
+  background: var(--green);
+  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+}
+
+/* Octagon */
+.shape-light {
+  background: var(--amber);
+  clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+}
+
+/* Map pin variants (same shapes, slightly larger) */
+.pin-road  { background: var(--red);   clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); }
+.pin-water { background: var(--ink);   border-radius: 50% 50% 50% 0; transform: rotate(-45deg); }
+.pin-garbage { background: var(--green); clip-path: polygon(50% 0%, 0% 100%, 100% 100%); }
+.pin-light { background: var(--amber); clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%); }
+
+/* ============================================================
+   Ticker Animation
+   Used in the amber scrolling news bar at the top
+   ============================================================ */
+@keyframes ticker-scroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.ticker-animate {
+  animation: ticker-scroll 28s linear infinite;
+}
+
+/* Respects user's reduced-motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .ticker-animate { animation: none; }
+}
+
+/* ============================================================
+   Page Transition Animation
+   Subtle fade+slide used when switching between views
+   ============================================================ */
+@keyframes page-fade-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.page-enter {
+  animation: page-fade-in 0.25s ease forwards;
+}
+
+/* ============================================================
+   Custom Scrollbar (optional polish)
+   ============================================================ */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--paper-2); }
+::-webkit-scrollbar-thumb { background: var(--line); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--slate); }
+
+/* ============================================================
+   Mobile Responsive Overrides
+   ============================================================ */
+
+/* Feed grid: 3-col → 2-col → 1-col */
+@media (max-width: 900px) {
+  .issue-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+@media (max-width: 580px) {
+  .issue-grid {
+    grid-template-columns: 1fr !important;
+  }
+  /* Tighten page padding on mobile */
+  .page-enter {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+}
+
+/* Map: reduce header padding on mobile */
+@media (max-width: 640px) {
+  .map-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .map-legend {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
+
+/* Admin table: allow horizontal scroll on mobile */
+@media (max-width: 768px) {
+  .admin-table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
